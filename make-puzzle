@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+
+import sys, random
+
+output_file_path = "puzzle"
+target_word_length = 7
+minimum_word_length = 4
+
+def report(message):
+	sys.stderr.write(f"\x1B[G\x1B[K{message}")
+	sys.stderr.flush()
+
+if len(sys.argv) < 2:
+	print(f"Usage: {sys.argv[0]} <dictionary-file>")
+	sys.exit(1)
+dictionary_path = sys.argv[1]
+
+
+# We're going to linearly scan the dictionary file three times.  Once just to
+# find out how many words (lines) it has, once to select a random word, and
+# once to find all the words that match it.
+
+# How many words?
+num_lines = 0
+with open(dictionary_path, "r") as dict_file:
+	for line in dict_file:
+		num_lines += 1
+
+# Pick a word.
+pangram = ''
+while len(pangram) == 0:
+	start_line = random.randint(0, num_lines - 1)
+	cur_line = 0
+	with open(dictionary_path, "r") as dict_file:
+		for line in dict_file:
+			if cur_line < start_line:
+				cur_line += 1
+				continue
+
+			word = line.strip()
+			if len(word) == target_word_length:
+				pangram = word
+				break
+
+# Pick a letter.
+key_letter = pangram[random.randint(0, len(pangram) - 1)]
+
+# Output the puzzle.
+def pangram_contains(word):
+	if key_letter not in word:
+		return False
+	letters_left = pangram
+	for letter in word:
+		index = pangram.find(letter)
+		if index < 0:
+			return False
+		letters_left = letters_left[0:index] + letters_left[index + 1:]
+	return True
+num_words = 0
+with open(output_file_path, "w") as out_file:
+	out_file.write(f"{pangram} {key_letter}\n")
+	with open(dictionary_path, "r") as dict_file:
+		for line in dict_file:
+			word = line.strip()
+			if len(word) < minimum_word_length:
+				continue
+			if not pangram_contains(word):
+				continue
+			out_file.write(f"{word}\n")
+			num_words += 1
+			report(f"Found {num_words} words from {num_lines} total words...")
+
+sys.stderr.write('\n')
+sys.stderr.flush()
+
