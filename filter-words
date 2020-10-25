@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import sys
+
+from_path = ''
+filter_path = ''
+to_path = ''
+frequency_field = 2
+
+# Parse args.
+args = sys.argv[1:]
+while len(args) > 0:
+	arg = args.pop(0)
+	if arg == "from:":
+		from_path = args.pop(0)
+	elif arg == "filter:":
+		filter_path = args.pop(0)
+	elif arg == "frequency-field:":
+		frequency_field = int(args.pop(0));
+	elif arg == "to:":
+		to_path = args.pop(0)
+if from_path == '' or filter_path == '' or to_path == 0:
+	print(f"Usage: {sys.argv[0]} from: <dictionary-file> [frequency-field: <field-number>] filter: <filter-file> to: <to-file>")
+	sys.exit(1)
+
+# Read the words from the filter file.
+filter_words = {}
+with open(filter_path, "r") as filter_file:
+	for line in filter_file:
+		fields = line.split()
+		if len(fields) == 0:
+			continue
+		word = fields[0]
+		filter_words[word] = True
+
+# Do the filtering.
+with open(to_path, "w") as out_file:
+	with open(from_path, "r") as dict_file:
+		for line in dict_file:
+			fields = line.split()
+			if len(fields) == 0:
+				continue
+			word = fields[0]
+			if word in filter_words:
+				if len(fields) > frequency_field:
+					out_file.write(f"{word} {fields[frequency_field]}\n")
+				else:
+					out_file.write(f"{word}\n")
+
