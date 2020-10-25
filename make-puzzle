@@ -37,7 +37,7 @@ while len(pangram) == 0:
 				cur_line += 1
 				continue
 
-			word = line.strip()
+			word = line.split()[0].lower()
 			if len(word) == target_word_length:
 				pangram = word
 				break
@@ -61,7 +61,7 @@ with open(output_file_path, "w") as out_file:
 	out_file.write(f"{pangram} {key_letter}\n")
 	with open(dictionary_path, "r") as dict_file:
 		for line in dict_file:
-			word = line.strip()
+			word = line.split()[0].lower()
 			if len(word) < minimum_word_length:
 				continue
 			if not pangram_contains(word):
