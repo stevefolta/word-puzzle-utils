@@ -51,7 +51,7 @@ def pangram_contains(word):
 		return False
 	letters_left = pangram
 	for letter in word:
-		index = pangram.find(letter)
+		index = letters_left.find(letter)
 		if index < 0:
 			return False
 		letters_left = letters_left[0:index] + letters_left[index + 1:]
