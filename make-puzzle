@@ -10,10 +10,17 @@ def report(message):
 	sys.stderr.write(f"\x1B[G\x1B[K{message}")
 	sys.stderr.flush()
 
-if len(sys.argv) < 2:
-	print(f"Usage: {sys.argv[0]} <dictionary-file>")
+dictionary_path = ''
+args = sys.argv[1:]
+while len(args) > 0:
+	arg = args.pop(0)
+	if arg == "letters:":
+		target_word_length = int(args.pop(0))
+	else:
+		dictionary_path = arg
+if len(dictionary_path) == 0:
+	print(f"Usage: {sys.argv[0]} [letters: <num-letters>] <dictionary-file>")
 	sys.exit(1)
-dictionary_path = sys.argv[1]
 
 
 # We're going to linearly scan the dictionary file three times.  Once just to
