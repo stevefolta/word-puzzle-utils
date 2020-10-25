@@ -5,7 +5,7 @@ import sys, random
 output_file_path = "puzzle"
 target_word_length = 7
 minimum_word_length = 4
-frequency_field = 2
+frequency_field = 1
 
 def report(message):
 	sys.stderr.write(f"\x1B[G\x1B[K{message}")
