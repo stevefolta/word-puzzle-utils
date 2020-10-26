@@ -6,12 +6,14 @@ output_file_path = "puzzle"
 target_word_length = 7
 minimum_word_length = 4
 frequency_field = 1
+minimum_pangram_frequency = 0.0
 
 def report(message):
 	sys.stderr.write(f"\x1B[G\x1B[K{message}")
 	sys.stderr.flush()
 
 dictionary_path = ''
+show_usage = False
 args = sys.argv[1:]
 while len(args) > 0:
 	arg = args.pop(0)
@@ -19,10 +21,27 @@ while len(args) > 0:
 		target_word_length = int(args.pop(0))
 	elif arg == "frequency-field:":
 		frequency_field = int(args.pop(0));
+	elif arg == "min-frequency:":
+		minimum_pangram_frequency = float(args.pop(0))
+	elif arg == "to:":
+		output_file_path = args.pop(0)
+	elif arg == "--help":
+		show_usage = True
 	else:
 		dictionary_path = arg
-if len(dictionary_path) == 0:
-	print(f"Usage: {sys.argv[0]} [letters: <num-letters>] [frequency-field: <field-number>] <dictionary-file>")
+if len(dictionary_path) == 0 or show_usage:
+	print(f"Usage: {sys.argv[0]} <dictionary-file> [options...]")
+	print(f"Options are:")
+	print(f"  letters: <num-letters>")
+	print(f"    Letter size of the biggest word (the pangram).  Default: 7.")
+	print(f"  frequency-field: <field-number>")
+	print(f"    Which field (zero-based) in the words file has each word's frequency.")
+	print(f"    Default: 1.")
+	print(f"  min-frequency: <frequency>")
+	print(f"    Pangram must have at least this frequency out of the total frequency.")
+	print(f"    Between 0 and 1, usually very small (eg. 1e-8).  Default: 0.0")
+	print(f"  to: <out-file>")
+	print(f'    Output file.  Default: "puzzle".')
 	sys.exit(1)
 
 
@@ -58,6 +77,8 @@ while len(pangram) == 0:
 				pangram_frequency = 0.0
 				if total_frequency > 0.0:
 					pangram_frequency = float(fields[frequency_field]) / total_frequency
+					if pangram_frequency < minimum_pangram_frequency:
+						continue
 				pangram = word
 				break
 
