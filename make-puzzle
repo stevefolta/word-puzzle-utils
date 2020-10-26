@@ -30,14 +30,19 @@ if len(dictionary_path) == 0:
 # find out how many words (lines) it has, once to select a random word, and
 # once to find all the words that match it.
 
-# How many words?
+# How many words?  And total frequency?
 num_lines = 0
+total_frequency = 0.0
 with open(dictionary_path, "r") as dict_file:
 	for line in dict_file:
 		num_lines += 1
+		fields = line.split()
+		if len(fields) > frequency_field:
+			total_frequency += float(fields[frequency_field])
 
 # Pick a word.
 pangram = ''
+pangram_frequency = 0.0
 while len(pangram) == 0:
 	start_line = random.randint(0, num_lines - 1)
 	cur_line = 0
@@ -47,8 +52,12 @@ while len(pangram) == 0:
 				cur_line += 1
 				continue
 
-			word = line.split()[0].lower()
+			fields = line.split()
+			word = fields[0].lower()
 			if len(word) == target_word_length:
+				pangram_frequency = 0.0
+				if total_frequency > 0.0:
+					pangram_frequency = float(fields[frequency_field]) / total_frequency
 				pangram = word
 				break
 
@@ -86,4 +95,7 @@ with open(output_file_path, "w") as out_file:
 
 sys.stderr.write('\n')
 sys.stderr.flush()
+
+if pangram_frequency > 0.0:
+	print(f"Chosen word has frequency {pangram_frequency}.")
 
