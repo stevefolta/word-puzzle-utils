@@ -119,4 +119,5 @@ sys.stderr.flush()
 
 if pangram_frequency > 0.0:
 	print(f"Chosen word has frequency {pangram_frequency}.")
+	print(f"Total frequency was {total_frequency}.")
 
