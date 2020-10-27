@@ -5,7 +5,7 @@ import sys
 from_path = ''
 filter_path = ''
 to_path = ''
-frequency_field = 2
+frequency_field = 1
 
 # Parse args.
 args = sys.argv[1:]
@@ -30,7 +30,7 @@ with open(filter_path, "r") as filter_file:
 		fields = line.split()
 		if len(fields) == 0:
 			continue
-		word = fields[0]
+		word = fields[0].lower()
 		filter_words[word] = True
 
 # Do the filtering.
@@ -40,7 +40,7 @@ with open(to_path, "w") as out_file:
 			fields = line.split()
 			if len(fields) == 0:
 				continue
-			word = fields[0]
+			word = fields[0].lower()
 			if word in filter_words:
 				if len(fields) > frequency_field:
 					out_file.write(f"{word} {fields[frequency_field]}\n")
