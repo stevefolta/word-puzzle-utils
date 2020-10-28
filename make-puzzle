@@ -7,6 +7,7 @@ target_word_length = 7
 minimum_word_length = 4
 frequency_field = 1
 minimum_pangram_frequency = 0.0
+verbose = False
 
 def report(message):
 	sys.stderr.write(f"\x1B[G\x1B[K{message}")
@@ -25,6 +26,8 @@ while len(args) > 0:
 		minimum_pangram_frequency = float(args.pop(0))
 	elif arg == "to:":
 		output_file_path = args.pop(0)
+	elif arg == "-v" or arg == "--verbose":
+		verbose = True
 	elif arg == "--help":
 		show_usage = True
 	else:
@@ -42,6 +45,8 @@ if len(dictionary_path) == 0 or show_usage:
 	print(f"    Between 0 and 1, usually very small (eg. 1e-8).  Default: 0.0")
 	print(f"  to: <out-file>")
 	print(f'    Output file.  Default: "puzzle".')
+	print(f"  -v")
+	print(f'    Verbose output.')
 	sys.exit(1)
 
 
@@ -112,10 +117,15 @@ with open(output_file_path, "w") as out_file:
 			else:
 				out_file.write(f"{word}\n")
 			num_words += 1
-			report(f"Found {num_words} words from {num_lines} total words...")
+			if verbose:
+				report(f"Found {num_words} words from {num_lines} total words...")
 
-sys.stderr.write('\n')
-sys.stderr.flush()
+if verbose:
+	sys.stderr.write('\n')
+	sys.stderr.flush()
+else:
+	print(f"Found {num_words} words from {num_lines} total words.")
+	
 
 if pangram_frequency > 0.0:
 	print(f"Chosen word has frequency {pangram_frequency}.")
