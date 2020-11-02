@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+import sys
+
+max_letters = 9999
+
+class WordList:
+	def __init__(self, path, frequency_field = 1):
+		self.path = path
+		self.frequency_field = frequency_field
+		self.words = {} 	# word => frequency
+		self.total_frequency = 0.0
+		self.has_freqencies = True
+		self.read()
+
+	def read(self):
+		print(f"Reading {self.path}...", end = '', flush = True)
+		with open(self.path, "r") as dict_file:
+			for line in dict_file:
+				fields = line.split()
+				if len(fields) == 0 or fields[0].startswith('#'):
+					continue
+				frequency = 0.0
+				if len(fields) > self.frequency_field:
+					frequency = float(fields[self.frequency_field])
+				else:
+					self.has_frequencies = False
+				word = fields[0].lower()
+				self.words[word] = frequency
+				self.total_frequency += frequency
+		print(f" {len(self.words)} words, total frequency: {self.total_frequency}", flush = True)
+
+paths = []
+args = sys.argv[1:]
+while len(args) > 0:
+	arg = args.pop(0)
+	if arg == "letters:":
+		max_letters = int(args.pop(0))
+	else:
+		paths.append(arg)
+
+for path in paths:
+	word_list = WordList(path)
+	for exponent in range(1, 20):
+		frequency = 10 ** -exponent
+		num_words = 0
+		num_pangrams = 0
+		for word in word_list.words:
+			if len(word) <= max_letters and word_list.words[word] >= frequency:
+				num_words += 1
+				if len(word) == max_letters:
+					num_pangrams += 1
+		print(f"{num_words} words and {num_pangrams} pangrams at 1e-{exponent}")
+		if num_words == len(word_list.words):
+			break;
+
