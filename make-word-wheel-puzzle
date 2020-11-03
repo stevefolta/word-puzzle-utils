@@ -19,7 +19,12 @@ args = sys.argv[1:]
 while len(args) > 0:
 	arg = args.pop(0)
 	if arg == "letters:":
-		target_word_length = int(args.pop(0))
+		letters_spec = args.pop(0).split('-')
+		if len(letters_spec) == 2:
+			minimum_word_length = int(letters_spec[0])
+			target_word_length = int(letters_spec[1])
+		else:
+			target_word_length = int(letters_spec[0])
 	elif arg == "frequency-field:":
 		frequency_field = int(args.pop(0));
 	elif arg == "min-frequency:":
@@ -36,7 +41,9 @@ if len(dictionary_path) == 0 or show_usage:
 	print(f"Usage: {sys.argv[0]} <dictionary-file> [options...]")
 	print(f"Options are:")
 	print(f"  letters: <num-letters>")
-	print(f"    Letter size of the biggest word (the pangram).  Default: 7.")
+	print(f'    How many letters in a word, either as a range (eg. "3-7"), or just the');
+	print(f'    maximum number of letters (with the minimum word length defaulting');
+	print(f'    to 4).')
 	print(f"  frequency-field: <field-number>")
 	print(f"    Which field (zero-based) in the words file has each word's frequency.")
 	print(f"    Default: 1.")
