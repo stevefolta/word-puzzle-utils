@@ -29,6 +29,11 @@ class WordList:
 		print(f" {len(self.words)} words, total frequency: {self.total_frequency}", flush = True)
 
 	def normalize(self):
+		# Recalculate the total_frequency, in case words were added or removed.
+		self.total_frequency = 0.0
+		for word in self.words:
+			self.total_frequency += self.words[word]
+		# Normalize.
 		for word in self.words:
 			self.words[word] /= self.total_frequency
 		self.total_frequency = 1.0
@@ -41,10 +46,6 @@ class WordList:
 				self.words[word] = (self.words[word] + other.words[word]) / 2.0
 			else:
 				self.words[word] = other.words[word]
-		# Recalculate total frequency and re-normalize.
-		self.total_frequency = 0.0
-		for word in self.words:
-			self.total_frequency += self.words[word]
 		self.normalize()
 
 	def omit(self, other):
